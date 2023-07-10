@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}  
+
+
+enum Roles {
+  SUPERADMIN
+  ADMIN
+  USER
+}
+
+model users {
+  userId Int @id @default(autoincrement())
+  FirstName String
+  LastName String
+  Address String ?
+  Email String @unique
+  Password String
+  Role Roles @default(USER)
+  product product[]
+  cart cart[]
+ payment payment[]
+ catagory catagory[]
+ subCatagory subCatagory[]   
+}
+
+model product {
+  ProductId Int @id @default(autoincrement())
+  title String
+  Description String?
+  Price String
+  img String 
+  Store String
+  userId Int
+  subatCagoryId Int
+  users  users    @relation(fields: [userId], references: [userId],onDelete: Cascade)
+  subCatagory  subCatagory   @relation(fields: [ subatCagoryId ], references: [ subatCagoryId] , onDelete: Cascade)
+  cart cart[]
+  payment payment[]
+}
+
+
+model cart {
+  cartId Int @id @default(autoincrement())
+   qty Int 
+   userId Int 
+   ProductId Int 
+   users  users    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+   product product    @relation(fields: [ProductId], references: [ProductId], onDelete: Cascade)
+   payment payment[]
+}
+
+model payment {
+   id Int @id @default(autoincrement())
+   userId Int
+   createAt Int?
+   is_paid Boolean  @default(false)
+   is_deliveredn Boolean @default(false)
+   ProductId Int
+  //  prds String[]
+   cartId Int
+   product product    @relation(fields: [ProductId], references: [ProductId],onDelete: Cascade)
+   users  users    @relation(fields: [userId], references: [userId])
+   cart  cart    @relation(fields: [cartId], references: [cartId])
+   
+
+}
+
+model subCatagory {
+  subatCagoryId Int @id @default(autoincrement())
+  type String
+  img String 
+  CagoryId Int 
+  Product product[]
+  catogory catagory @relation(fields: [CagoryId], references: [CagoryId],onDelete: Cascade)
+   userId Int 
+  user  users    @relation(fields: [userId], references: [userId],onDelete: Cascade)
+}
+
+
+model catagory {
+  CagoryId Int @id @default(autoincrement())
+  type String
+  userId Int 
+  users  users    @relation(fields: [userId], references: [userId],onDelete: Cascade)
+  subCategorie subCatagory[]
+}
+

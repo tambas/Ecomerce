@@ -1,0 +1,107 @@
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { useEffect } from 'react';
+import {useDispatch,useSelector} from 'react-redux'
+import {getAllcatogary,deletecatogary } from '../../../../rudex/slices/catogary/CatogarySlice'
+import Createcatogary from './Createcatogary';
+
+const Catogary = () => {
+    const dispatch = useDispatch();
+    const { catogary,isLoading,isError,isSuccess} = useSelector((state) => state.catogary)
+    console.log(catogary, "FOUND DATA!!!!!!!!!!")
+  
+    useEffect(() =>{
+  
+      // invocation ()
+  dispatch(getAllcatogary())
+    },[])
+  
+    const deleteHandler = (ID) => {
+    
+      dispatch(deletecatogary(ID));
+      console.log(catogary);
+    };
+
+  return (
+    <div className='w-[90%]   sm:w-[100%] grid grid-cols-2 content-center mt-10 '>
+        <div>
+            <Createcatogary/>
+        </div>
+
+   {/* <div className=' bg-slate-600  border shadow   sm:w-[100%]'> */}
+   
+      {isLoading? isLoading:(
+        <div>
+          <div className='head w-full  items-center justify-between'>
+      <h1 className='text-xl font-bold'>Catogart</h1>
+      </div>
+       
+         
+    <div className='overflow-y-auto h-[25rem'>
+    <div class=" sm: w-[77%] relative  overflow-x-auto shadow-md  sm:rounded-lg  lg:w-[100%]">
+     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 sm:w-[100%] ">
+       
+         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+             <tr>
+                 
+                 <th scope="col" class="px-6 py-3">
+                     Name
+                 </th>
+                 <th scope="col" class="px-6 py-3">
+                     view
+                 </th>
+                 <th scope="col" class="px-6 py-3">
+                     Delete
+                 </th>
+                 
+             </tr>
+         </thead>
+          {catogary?.  catagory?.map(( catagory
+ ) =>( 
+            <tbody>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 ">
+               
+                <th scope="row" class="flex items-center px-3 py-4 text-gray-900 whitespace-nowrap dark:text-white ">
+                <td class="px-6 py-4">
+                { catagory.type}
+                
+                </td>  
+                </th>  
+                <td class="px-6 py-4">
+               <Link to={`/Dashboard/Catogary/Edit/${catagory.CagoryId}`}>
+               <button className='px-3 py-2 bg-green-500 text-white'>
+               update
+                  </button>
+                     </Link>
+                </td>
+               
+ 
+                <td class="px-6 py-4">
+                    <button className='px-3 py-2 bg-green-900 text-white'onClick={()=> deleteHandler(catagory.CagoryId)}>
+                    delete
+                 </button>
+                </td>
+ 
+                 
+            </tr>
+            <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                
+               
+            </tr>
+        </tbody>
+        ))}
+     </table>
+     
+    
+ </div>
+    </div>
+ 
+        </div>
+      )}
+    </div> 
+      
+    //   </div>
+  )
+}
+
+export default Catogary
